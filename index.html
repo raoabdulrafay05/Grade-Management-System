@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #1e1e2f;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            padding: 32px;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            background-color: #2b2b3a;
+            border: 2px solid #3a3a4c;
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #34c3ff;
+            box-shadow: 0 0 0 2px rgba(52, 195, 255, 0.2);
+            outline: none;
+        }
+
+        .input-group input[type="password"],
+        .input-group input[type="text"] {
+            padding-right: 45px;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 16px;
+            top: 34px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.3s ease;
+            font-style: normal;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #3489c3;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        button:hover {
+            background: #34c3ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 195, 255, 0.3);
+        }
+
+        .back-button {
+            background: transparent;
+            border: 2px solid #34c3ff;
+            margin-top: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(52, 195, 255, 0.1);
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .links a {
+            color: #34c3ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: #ff6666;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 12px;
+            padding: 8px;
+            background: rgba(255, 102, 102, 0.1);
+            border-radius: 6px;
+        }
+
+        /* Form visibility */
+        .login-form,
+        .reset-form,
+        .register-form {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .login-form.active,
+        .reset-form.active,
+        .register-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Form -->
+        <form class="login-form active" method="POST" action="/login">
+            <h1>Login</h1>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <i class="toggle-password" onclick="togglePassword('password')">👁️</i>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember Me</label>
+            </div>
+
+            <button type="submit">Login</button>
+
+            <div class="links">
+                <a href="#" onclick="showForm('register', event)">Register</a>
+                <a href="#" onclick="showForm('reset', event)">Forgot Password?</a>
+            </div>
+        </form>
+
+        <!-- Registration Form -->
+        <form class="register-form" method="POST" action="/register">
+            <h1>Register</h1>
+            <div class="input-group">
+                <label for="reg-name">Full Name</label>
+                <input type="text" id="reg-name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" name="password" placeholder="Create a password" required>
+                <i class="toggle-password" onclick="togglePassword('reg-password')">👁️</i>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-confirm-password">Confirm Password</label>
+                <input type="password" id="reg-confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+                <i class="toggle-password" onclick="togglePassword('reg-confirm-password')">👁️</i>
+            </div>
+
+            <button type="submit">Register</button>
+            <button type="button" class="back-button" onclick="showForm('login', event)">Back to Login</button>
+        </form>
+
+        <!-- Password Reset Form -->
+        <form class="reset-form" method="POST" action="/reset-password">
+            <h1>Reset Password</h1>
+            <div class="input-group">
+                <label for="reset-email">Email</label>
+                <input type="email" id="reset-email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <button type="submit">Send Reset Link</button>
+            <button type="button" class="back-button" onclick="showForm('login', event)">Back to Login</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const passwordToggle = passwordField.nextElementSibling;
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                passwordToggle.textContent = "🙈";
+            } else {
+                passwordField.type = "password";
+                passwordToggle.textContent = "👁️";
+            }
+        }
+
+        function showForm(formType, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            
+            // Hide all forms
+            document.querySelectorAll('.login-form, .reset-form, .register-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Show the selected form
+            document.querySelector(`.${formType}-form`).classList.add('active');
+        }
+
+        // Show login form by default
+        document.addEventListener('DOMContentLoaded', () => {
+            showForm('login');
+        });
+    </script>
+</body>
+</html>
