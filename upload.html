@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .upload-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .main-container {
+            background: #1e1e2f;
+            flex: 1;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            padding: 32px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .requirements-container {
+            background: #1e1e2f;
+            width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            padding: 24px;
+            height: fit-content;
+            animation: slideIn 0.5s ease-out 0.2s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #34c3ff;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .upload-area {
+            border: 2px dashed #3a3a4c;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(43, 43, 58, 0.5);
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-area.dragover {
+            border-color: #34c3ff;
+            background: rgba(52, 195, 255, 0.1);
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #34c3ff;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .requirements-list {
+            list-style: none;
+        }
+
+        .requirements-list li {
+            color: #ccc;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: start;
+            gap: 8px;
+        }
+
+        .requirements-list li::before {
+            content: "•";
+            color: #34c3ff;
+            font-weight: bold;
+        }
+
+        .flash-message {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .flash-message.success {
+            background: rgba(0, 200, 81, 0.2);
+            border: 1px solid #00C851;
+            color: #00C851;
+        }
+
+        .flash-message.error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 24px;
+            color: #34c3ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .upload-container {
+                flex-direction: column;
+            }
+
+            .requirements-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <div class="main-container">
+            <h1>Upload CSV File</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {% if category == 'success' %}
+                                <span>✓</span>
+                            {% else %}
+                                <span>⚠</span>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="file" name="file" accept=".csv" required 
+                       onchange="handleFileSelect(this)" form="uploadForm">
+                <div class="upload-icon">📄</div>
+                <p class="upload-text">Drag and drop your CSV file here</p>
+                <p class="upload-subtext">or click to browse</p>
+            </div>
+
+            <form id="uploadForm" method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" style="display: none;"></form>
+            
+            <a href="{{ url_for('main_menu') }}" class="back-link">← Back to Main Menu</a>
+        </div>
+
+        <div class="requirements-container">
+            <h3>File Requirements</h3>
+            <ul class="requirements-list">
+                <li>File format must be CSV (.csv)</li>
+                <li>Required columns: "Name" and "Marks"</li>
+                <li>Marks must be between 0 and 100</li>
+                <li>Maximum file size: 10MB</li>
+                <li>Data should be properly formatted with no missing values</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('file');
+        const uploadForm = document.getElementById('uploadForm');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.type === 'text/csv') {
+                    uploadForm.submit();
+                } else {
+                    alert('Please select a valid CSV file.');
+                    input.value = '';
+                }
+            }
+        }
+
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            fileInput.files = dt.files;
+            if (file.type === 'text/csv') {
+                uploadForm.submit();
+            } else {
+                alert('Please select a valid CSV file.');
+            }
+        });
+    </script>
+</body>
+</html>
