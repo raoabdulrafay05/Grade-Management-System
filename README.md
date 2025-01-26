@@ -12,3 +12,4 @@ Python: The backend is implemented using Python.
 Pandas: Used for data extraction and manipulation (e.g., calculating the mean, standard deviation, and applying grading logic).
 Flask: Powers the web application and handles communication between the frontend and backend.
 JSON: Used for implementing JavaScript functionality and managing data interchange in the system.
+[Grade Managment.zip](https://github.com/user-attachments/files/18551118/Grade.Managment.zip)
